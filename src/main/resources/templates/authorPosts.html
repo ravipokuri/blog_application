@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Author Posts</title>
+  <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 20%;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .content {
+            width: 80%;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .post-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px;
+            width: calc(50% - 20px); /* Two posts per row */
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        .post-card h2 {
+            margin-top: 0;
+        }
+
+        .post-card p {
+            margin: 10px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 4px 8px; /* Reduced button height */
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            height: 20px;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <a th:href="@{/authorPostsSort}" class="btn btn-primary btn-sm">Sort</a>
+
+        <form th:action="@{/drafts}" method="get">
+            <button class="btn btn-primary" style="height:30px" type="submit">Drafts</button>
+        </form>
+
+    <div class="post-card" style="visibility: hidden;"></div>
+    <div class="post-card" style="visibility: hidden;"></div>
+    <h1 style="text-align: center;">My Posts</h1>
+    <br>
+    <div th:each="post : ${posts}" class="post-card">
+        <h2 th:text="${post.title}"></h2>
+        <p><strong>Author:</strong> <span th:text="${post.author}"></span></p>
+        <p th:text="${post.excerpt}"></p>
+        <div>
+            <a th:href="@{/showFormForUpdate(postId=${post.id})}" class="btn btn-info btn-sm">Update</a>
+            <a th:href="@{/delete(postId=${post.id})}" class="btn btn-info btn-sm"
+               onclick="return confirm('Are you sure you want to delete?')">Delete</a>
+            <a th:href="@{/view(postId=${post.id})}" class="btn btn-info btn-sm">View</a>
+
+        </div>
+    </div>
+</div>
+<div style="text-align: center; margin-top: 20px;">
+    <div th:if="${currentPage > 0}">
+        <a th:href="@{/myPosts(page=${currentPage - 1}, size=${size})}" class="btn btn-primary">Previous</a>
+    </div>
+    <div th:if="${currentPage < totalPages - 1}">
+        <a th:href="@{/myPosts(page=${currentPage + 1}, size=${size})}" class="btn btn-primary">Next</a>
+    </div>
+</div>
+</body>
+</html>

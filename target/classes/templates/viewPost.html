@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>View Post</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .post-details {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .post-details h2 {
+            margin-top: 0;
+        }
+
+        .post-details p {
+            margin: 10px 0;
+        }
+
+        .tags {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .comment-form {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        .comment-form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .comment-form input[type="submit"] {
+            background-color: #337ab7;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .comments-table th,
+        .comments-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .btn-info {
+            color: #fff;
+            background-color: #5bc0de;
+            border-color: #46b8da;
+        }
+    </style>
+</head>
+<body>
+<div class="post-details">
+    <h2 th:text="${post.title}"></h2>
+    <p><strong>Excerpt:</strong> <span th:text="${post.excerpt}"></span></p>
+    <p><strong>Author:</strong> <span th:text="${post.author}"></span></p>
+    <p><strong>Content:</strong> <span th:text="${post.content}"></span></p>
+    <p><strong>Last Updated At:</strong> <span th:if="${post.updatedAt != null}" th:text="${post.updatedAt}"></span> <span th:unless="${post.updatedAt != null}" th:text="${post.createdAt}"></span></p>
+    <div class="tags">
+        <strong>Tags:</strong>
+        <span th:each="tag : ${post.tags}" th:text="${tag.name} + ', '"></span>
+    </div>
+</div>
+
+<div class="comment-form">
+    <form th:action="@{/comments/add}" method="post">
+        <input type="hidden" name="postId" th:value="${post.id}">
+        <input type="text" name="name" placeholder="Author">
+        <input type="text" name="email" placeholder="Email">
+        <input type="text" name="content" placeholder="Comment">
+        <input type="submit" value="Add Comment">
+    </form>
+</div>
+
+<table class="comments-table">
+    <thead>
+    <tr>
+        <th>Author</th>
+        <th>Comment</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="eachComment : ${comments}">
+        <td th:text="${eachComment.name}"></td>
+        <td th:text="${eachComment.comment}"></td>
+        <td>
+            <th:block th:if="${post.author == name}">
+                <a th:href="@{/comments/showFormForUpdate(commentId=${eachComment.id})}" class="btn btn-info">Update</a>
+                <a th:href="@{/comments/delete(commentId=${eachComment.id})}" class="btn btn-info" onclick="if (!(confirm('Are you sure you want to delete?'))) return false">Delete</a>
+            </th:block>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

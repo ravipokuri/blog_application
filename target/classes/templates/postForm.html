@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h3 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #337ab7;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #23527c;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #337ab7;
+        }
+    </style>
+</head>
+<body>
+<h3>Please fill in the form details.</h3>
+<hr>
+
+<form action="#" th:action="@{/create}" th:object="${post}" method="POST">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <input type="text" th:field="*{title}" placeholder="Title" required>
+
+    <input type="text" th:field="*{excerpt}" placeholder="Excerpt" required>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <input type="text" th:field="*{author}" placeholder="Author" required>
+    </div>
+    <div sec:authorize="hasAuthority('AUTHOR')">
+        <input type="hidden" th:field="*{author}" />
+    </div>
+
+    <textarea th:field="*{content}" rows="15" style="width: 100%;" placeholder="Content" required></textarea>
+
+    <input type="text" name="tagInput" th:value="${post?.id != null ? existingTags : ''}" placeholder="Enter tags (comma-separated)">
+
+    <div th:if="${post.id == null}">
+        <input type="submit" name="publish" value="Publish">
+        <input type="submit" name="draft" value="Draft">
+    </div>
+    <div th:if="${post.id != null}">
+        <input type="submit" name="update" value="Update">
+    </div>
+
+</form>
+
+<hr>
+<a th:href="@{/posts}">Back to Posts</a>
+
+</div>
+</body>
+</html>
